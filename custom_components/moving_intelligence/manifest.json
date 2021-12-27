@@ -1,0 +1,11 @@
+{
+  "domain": "moving_intelligence",
+  "name": "Moving Intelligence",
+  "documentation": "https://github.com/cyberjunky/home-assistant-moving_intelligence",
+  "issue_tracker": "https://github.com/cyberjunky/home-assistant-moving_intelligence/issues",
+  "requirements": ["pymovingintelligence_ha==0.0.6"],
+  "dependencies": [],
+  "codeowners": ["@cyberjunky"],
+  "iot_class": "cloud_polling",
+  "version": "0.0.2"
+}
