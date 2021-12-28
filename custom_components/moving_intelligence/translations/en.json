@@ -1,0 +1,18 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Moving Intelligence",
+                "description": "Please input your username and api key",
+                    "data": {
+                        "username": "Username",
+                        "apikey": "API key"
+                    }
+            }
+        },
+        "error": {
+            "not_logged_in": "Not logged in",
+            "unknown": "Unexpected error."
+        }
+    }
+}

@@ -1,72 +1,82 @@
-"""Support for Moving Intelligence Platform."""
+"""Device tracker for Moving Intelligence platform."""
 import logging
 
-from pymovingintelligence_ha import MovingIntelligence
-
-import requests
-import voluptuous as vol
+from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
-from homeassistant.components.device_tracker import (
-    PLATFORM_SCHEMA as PARENT_PLATFORM_SCHEMA,
-)
-from homeassistant.const import CONF_API_KEY, CONF_INCLUDE, CONF_USERNAME
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.event import track_utc_time_change
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PARENT_PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_INCLUDE, default=[]): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
+
+async def async_setup_entry(hass, config_entry, async_add_devices):
+    """Set up the Moving Intelligence tracker from config entry."""
+    trackers = []
+
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
+
+    for vehicle in coordinator.data:
+        tracker = MovingIntelligenceLocationTracker(coordinator, vehicle.data)
+        trackers.append(tracker)
+
+    async_add_devices(trackers, True)
 
 
-def setup_scanner(hass, config: dict, see, discovery_info=None):
-    """Set up the DeviceScanner."""
-    scanner = MovingIntelligenceTracker(config, see)
-    scanner.setup(hass)
+class MovingIntelligenceBaseEntity(CoordinatorEntity):
+    """Base entity for Moving Intelligence tracker."""
+    def __init__(self, coordinator, vehicle) -> None:
+        super().__init__(coordinator)
+        self._vehicle = vehicle
+        self._vin = vehicle["chassis_number"]
+        self._plate = vehicle["license_plate"]
+        self._model = "{} {}".format(vehicle["make"], vehicle["model"])
+        self._name =  "{} {}".format(vehicle["license_plate"], self._model)
 
-    return True
+        self._attr_name = self._name
+        self._attr_unique_id = f"Moving Intelligence {self._vin}"
+
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self._vin)},
+            "name": self._vin,
+            "model": self._model,
+            "manufacturer": "Moving Intelligence",
+        }
+
+    @property
+    def vehicle(self):
+        return self._vehicle
+
+    @property
+    def available(self):
+        return True
 
 
-class MovingIntelligenceTracker(TrackerEntity):
-    """Define a scanner for the MovingIntelligence platform."""
+class MovingIntelligenceLocationTracker(MovingIntelligenceBaseEntity, TrackerEntity):
+    """The Moving Intelligence tracker."""
+    def __init__(self, coordinator, vehicle) -> None:
+        """Initialize the Tracker."""
+        super().__init__(coordinator, vehicle)
+        self._vin = vehicle["license_plate"]
 
-    def __init__(self, config, see):
-        """Initialize MovingIntellgienceScanner."""
-        self._include = config.get(CONF_INCLUDE)
-        self._see = see
+        self._attr_unique_id = f"Moving Intelligence {self._vin}"
+        self._attr_icon = "mdi:car"
+        self._attr_extra_state_attributes = vehicle
 
-        self._api = MovingIntelligence(
-            username=config.get(CONF_USERNAME),
-            apikey=config.get(CONF_API_KEY),
-        )
+    @property
+    def latitude(self):
+        return self.vehicle["latitude"]
 
+    @property
+    def longitude(self):
+        return self.vehicle["longitude"]
 
-    def setup(self, hass):
-        """Set up a timer and start gathering devices."""
-        self._refresh()
-        track_utc_time_change(
-            hass, lambda now: self._refresh(), second=range(0, 60, 30)
-        )
+    @property
+    def source_type(self):
+        return SOURCE_TYPE_GPS
 
-
-    def _refresh(self) -> None:
-        """Refresh device information from the MovingIntelligence platform."""
-        try:
-            devices = self._api.get_devices()
-
-            for device in devices:
-                if not self._include or device.license_plate in self._include:
-
-                    self._see(
-                        dev_id=device.plate_as_id,
-                        gps=(device.latitude, device.longitude),
-                        attributes=device.state_attributes,
-                        icon="mdi:car",
-                    )
-        except requests.exceptions.ConnectionError:
-            _LOGGER.error("ConnectionError: Could not connect to MovingIntelligence")
+    @property
+    def available(self):
+        return True
