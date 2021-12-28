@@ -30,19 +30,19 @@ class MovingIntelligenceBaseEntity(CoordinatorEntity):
         self._vehicle = vehicle
         self._vin = vehicle["chassis_number"]
         self._plate = vehicle["license_plate"]
-        self._model = "{} {}".format(vehicle["make"], vehicle["model"])
-        self._name =  "{} {}".format(vehicle["license_plate"], self._model)
+        self._make = vehicle["make"]
+        self._model = vehicle["model"]
 
-        self._attr_name = self._name
+        self._attr_name = f"{self._plate} {self._make} {self._model}"
         self._attr_unique_id = f"Moving Intelligence {self._vin}"
 
     @property
     def device_info(self):
         return {
             "identifiers": {(DOMAIN, self._vin)},
-            "name": self._vin,
+            "name": self._plate,
             "model": self._model,
-            "manufacturer": "Moving Intelligence",
+            "manufacturer": self._make
         }
 
     @property
@@ -59,7 +59,7 @@ class MovingIntelligenceLocationTracker(MovingIntelligenceBaseEntity, TrackerEnt
     def __init__(self, coordinator, vehicle) -> None:
         """Initialize the Tracker."""
         super().__init__(coordinator, vehicle)
-        self._vin = vehicle["license_plate"]
+        self._vin = vehicle["chassis_number"]
 
         self._attr_unique_id = f"Moving Intelligence {self._vin}"
         self._attr_icon = "mdi:car"
