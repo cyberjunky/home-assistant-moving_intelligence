@@ -18,3 +18,13 @@ NOTE: You need an account and api-key for https://movingintelligence.com/
 
 ## Configuration
 Search and install the 'Moving Intelligence' integration via Configuration > Devices & Services, and fill in your account details.
+
+## Community
+
+Questions, ideas or just want to chat? Join The Junkyard on Discord:
+
+<a href="https://discord.gg/hUBQxRhJCU">
+  <img src="https://raw.githubusercontent.com/cyberjunky/cyberjunky/main/assets/junkyard-discord.svg"
+       alt="Join The Junkyard on Discord" width="600">
+</a>
+
