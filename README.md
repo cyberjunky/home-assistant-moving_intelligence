@@ -17,7 +17,19 @@ NOTE: You need an account and api-key for https://movingintelligence.com/
 - Restart Home-Assistant.
 
 ## Configuration
-Search and install the 'Moving Intelligence' integration via Configuration > Devices & Services, and fill in your account details.
+Search and install the 'Moving Intelligence' integration via Configuration > Devices & Services, and fill in your username and API key.
+
+Each vehicle becomes a device with a GPS `device_tracker` entity, polled every minute. Trip, odometer and address details are available as attributes. Vehicles added to your account later are picked up automatically.
+
+If your API key changes or is revoked, Home Assistant shows a re-authentication prompt where you can enter the new key.
+
+## Development
+
+```bash
+pip install -r requirements.txt -r requirements_lint.txt
+scripts/test
+pre-commit run --all-files --hook-stage manual --config .github/pre-commit-config.yaml
+```
 
 ## Community
 

@@ -1,5 +1,5 @@
 {
     "name": "Moving Intelligence",
-    "render_readme": false,
-    "domains": ["device_tracker"]
+    "homeassistant": "2025.2.0",
+    "render_readme": false
 }

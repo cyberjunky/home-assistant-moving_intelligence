@@ -1,0 +1,2 @@
+homeassistant>=2026.11.0
+pymovingintelligence_ha==0.0.11

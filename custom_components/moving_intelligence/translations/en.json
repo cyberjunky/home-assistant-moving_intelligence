@@ -1,18 +1,45 @@
 {
-    "config": {
-        "step": {
-            "user": {
-                "title": "Moving Intelligence",
-                "description": "Please input your username and api key",
-                    "data": {
-                        "username": "Username",
-                        "apikey": "API key"
-                    }
-            }
+  "config": {
+    "step": {
+      "user": {
+        "title": "Moving Intelligence",
+        "description": "Enter your Moving Intelligence username and API key.",
+        "data": {
+          "username": "Username",
+          "apikey": "API key"
         },
-        "error": {
-            "not_logged_in": "Not logged in",
-            "unknown": "Unexpected error."
+        "data_description": {
+          "username": "The username of your Moving Intelligence account.",
+          "apikey": "The API key from your Moving Intelligence account."
         }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate Moving Intelligence",
+        "description": "The API key for {username} is no longer valid. Enter a new API key.",
+        "data": {
+          "apikey": "API key"
+        },
+        "data_description": {
+          "apikey": "The API key from your Moving Intelligence account."
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid username or API key.",
+      "cannot_connect": "Failed to connect to Moving Intelligence.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This account is already configured.",
+      "reauth_successful": "Re-authentication was successful."
     }
+  },
+  "exceptions": {
+    "invalid_auth": {
+      "message": "Moving Intelligence rejected the username or API key."
+    },
+    "update_failed": {
+      "message": "Error fetching data from Moving Intelligence: {error}"
+    }
+  }
 }
