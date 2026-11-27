@@ -1,12 +1,13 @@
 {
-  "after_dependencies": ["cloud", "http"],
   "domain": "moving_intelligence",
   "name": "Moving Intelligence",
+  "codeowners": ["@cyberjunky"],
   "config_flow": true,
   "documentation": "https://github.com/cyberjunky/home-assistant-moving_intelligence",
-  "codeowners": ["@cyberjunky"],
-  "requirements": ["pymovingintelligence_ha==0.0.11"],
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/cyberjunky/home-assistant-moving_intelligence/issues",
-  "version": "0.0.5",
-  "iot_class": "cloud_polling"
+  "loggers": ["pymovingintelligence_ha"],
+  "requirements": ["pymovingintelligence_ha==0.0.11"],
+  "version": "0.1.0"
 }
